@@ -254,6 +254,84 @@
 
             <p><span class="link" onclick="$(window).scrollTop(0)">Click here</span> to head back to the beginning.</p>
         </div>
+
+        <div class="code-explanation-block">
+            <h3>Code Explanation</h3>
+
+            <p>Below is a fixed step-by-step walkthrough of Huffman Coding using a min heap. It behaves like an in-browser debugger: the code stays static, while each step highlights what changed in the heap, the tree, and the generated binary codes.</p>
+
+            <div id="huffman-debugger" class="debugger-shell" tabindex="0">
+                <div class="debugger-panel debugger-panel-left">
+                    <div class="debugger-toolbar">
+                        <div class="debugger-toolbar-meta">
+                            <span class="debugger-language-pill">Python</span>
+                            <span class="debugger-file-name">huffman_min_heap.py</span>
+                        </div>
+
+                        <div class="debugger-controls">
+                            <button type="button" id="debugger-prev">Previous</button>
+                            <button type="button" id="debugger-next">Next</button>
+                        </div>
+                    </div>
+
+                    <div class="debugger-progress-row">
+                        <span id="debugger-phase"></span>
+                        <span id="debugger-progress"></span>
+                    </div>
+
+                    <div id="debugger-code" class="debugger-code-view"></div>
+
+                    <div class="debugger-explanation-card">
+                        <h4 id="debugger-step-title"></h4>
+                        <p id="debugger-step-explanation"></p>
+                    </div>
+                </div>
+
+                <div class="debugger-panel debugger-panel-right">
+                    <div class="debugger-visual-header">
+                        <div>
+                            <span class="debugger-visual-label">Execution View</span>
+                            <p id="debugger-action-text" class="debugger-action-text"></p>
+                        </div>
+
+                        <div class="debugger-text-summary">
+                            <div class="debugger-summary-box">
+                                <span class="debugger-summary-label">Input</span>
+                                <strong id="debugger-input-text"></strong>
+                            </div>
+                            <div class="debugger-summary-box">
+                                <span class="debugger-summary-label">Encoded</span>
+                                <strong id="debugger-encoded-text"></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="debugger-visual-grid">
+                        <div class="debugger-heap-card">
+                            <h4>Min Heap</h4>
+                            <div id="debugger-heap"></div>
+                        </div>
+
+                        <div class="debugger-tree-card">
+                            <h4>Tree Construction</h4>
+                            <svg id="debugger-tree-svg"></svg>
+                        </div>
+                    </div>
+
+                    <div class="debugger-bottom-grid">
+                        <div class="debugger-frequency-card">
+                            <h4>Frequency Table</h4>
+                            <div id="debugger-frequency"></div>
+                        </div>
+
+                        <div class="debugger-encoding-card">
+                            <h4>Encoding Table</h4>
+                            <div id="debugger-encoding"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- javascript -->
@@ -261,6 +339,7 @@
     <script type="text/javascript" src="js/poly.js"></script>
     <script type="text/javascript" src="js/queue.js"></script>
     <script type="text/javascript" src="js/scroll.js"></script>
+    <script type="text/javascript" src="js/debugger.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>
