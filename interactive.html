@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Huffman Algorithm Debugger</title>
+    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
+
+    <script src="js/lib/d3.v4.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500|Inter:400,500,600,700|JetBrains+Mono:400,500,600|Roboto+Mono:400,500">
+    <link rel="stylesheet" href="css/interactive.css">
+</head>
+<body class="interactive-page">
+    <main id="interactive-huffman-app" class="interactive-wrapper is-setup">
+        <aside class="interactive-left-panel" aria-label="Interactive Huffman controls and code">
+            <header class="interactive-topbar">
+                <div class="interactive-title-block">
+                    <span class="interactive-kicker">Algorithm Debugger</span>
+                    <h1>Huffman Workstation</h1>
+                </div>
+            </header>
+
+            <form id="interactive-huffman-form" class="interactive-input-shell">
+                <label class="interactive-input-label" for="interactive-input">Input Text</label>
+                <textarea id="interactive-input" name="text" rows="4" placeholder="Try basketball, compression, abracadabra, or your own text."></textarea>
+
+                <div class="interactive-input-actions">
+                    <button type="submit" id="interactive-encode">Encode</button>
+                    <span id="interactive-status" class="interactive-status-text"></span>
+                </div>
+
+                <p id="interactive-error" class="interactive-error" hidden></p>
+            </form>
+
+            <section class="interactive-output-panel" aria-label="Current step">
+                <div class="interactive-output-header">
+                    <div>
+                        <span class="interactive-panel-label">Trace State</span>
+                        <h2 id="interactive-step-title">Ready</h2>
+                    </div>
+                    <div class="interactive-step-meta">
+                        <span id="interactive-step-phase" class="interactive-phase-pill">trace</span>
+                        <span id="interactive-step-counter">Step 0 / 0</span>
+                    </div>
+                </div>
+
+                <p id="interactive-step-description" class="interactive-step-description">Enter text to generate deterministic Huffman snapshots.</p>
+
+                <div class="interactive-compact-bits-panel">
+                    <span class="interactive-panel-label">Encoded Bits</span>
+                    <div id="interactive-compact-bits" class="interactive-compact-bits">No bits emitted yet.</div>
+                </div>
+
+                <div class="interactive-encoded-shell">
+                    <div class="interactive-encoded-source">
+                        <span class="interactive-panel-label">Input Walkthrough</span>
+                        <div id="interactive-encoded-text" class="interactive-encoded-text"></div>
+                        <p id="interactive-current-char" class="interactive-current-char">No active character</p>
+                    </div>
+
+                    <div class="interactive-encoded-bitstream">
+                        <span class="interactive-panel-label">Bitstream</span>
+                        <div id="interactive-encoded-bits" class="interactive-encoded-bits"></div>
+                    </div>
+                </div>
+            </section>
+
+        </aside>
+
+        <section id="interactive-visualizer-workspace" class="interactive-visualizer-workspace" aria-label="Interactive Huffman visualization">
+            <section class="interactive-stage-card interactive-panel-card" data-panel="tree">
+                <div class="interactive-card-header">
+                    <div>
+                        <span class="interactive-panel-label">Visualization Stage</span>
+                        <h3 class="interactive-stage-title">Huffman Tree</h3>
+                    </div>
+                    <a href="index.html" class="interactive-nav-link">Back to Scrollytelling</a>
+                </div>
+                <div id="tree-viz" class="interactive-tree-viewport">
+                    <svg id="interactive-tree-svg"></svg>
+                </div>
+            </section>
+
+            <section class="interactive-data-grid" aria-label="Heap and table state">
+                <div class="interactive-card interactive-panel-card interactive-scroll-card" data-panel="heap">
+                    <div class="interactive-card-header">
+                        <div>
+                            <span class="interactive-panel-label">Priority Queue</span>
+                            <h3 class="interactive-subtitle">Min Heap</h3>
+                        </div>
+                    </div>
+                    <div id="interactive-heap" class="interactive-heap"></div>
+                </div>
+
+                <div class="interactive-card interactive-panel-card interactive-scroll-card" data-panel="frequency">
+                    <div class="interactive-card-header">
+                        <div>
+                            <span class="interactive-panel-label">Current Counts</span>
+                            <h3 class="interactive-subtitle">Frequency Table</h3>
+                        </div>
+                    </div>
+                    <div class="interactive-table-scroll">
+                        <table class="interactive-table">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Freq</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="interactive-frequency-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="interactive-card interactive-panel-card interactive-scroll-card" data-panel="encoding">
+                    <div class="interactive-card-header">
+                        <div>
+                            <span class="interactive-panel-label">Assigned Bits</span>
+                            <h3 class="interactive-subtitle">Code Alphabet</h3>
+                        </div>
+                    </div>
+                    <div class="interactive-table-scroll">
+                        <table class="interactive-table">
+                            <thead>
+                                <tr>
+                                    <th>Character</th>
+                                    <th>Binary Code</th>
+                                </tr>
+                            </thead>
+                            <tbody id="interactive-codes-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <footer class="interactive-footer-controls">
+            <button type="button" id="interactive-prev">Previous</button>
+            <span id="interactive-step-counter-bottom">Use the controls to move through the trace.</span>
+            <button type="button" id="interactive-reset" hidden>Reset/New</button>
+            <button type="button" id="interactive-next">Next</button>
+        </footer>
+    </main>
+
+    <script type="text/javascript" src="js/interactive-state.js"></script>
+    <script type="text/javascript" src="js/interactive-ui.js"></script>
+    <script type="text/javascript" src="js/interactive-tree.js"></script>
+    <script type="text/javascript" src="js/interactive-controls.js"></script>
+    <script type="text/javascript" src="js/interactive-huffman.js"></script>
+</body>
+</html>

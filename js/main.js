@@ -3,6 +3,7 @@ $(document).ready(function() {
 
     init_scrolling();
     update_page_height();
+    update_top_jump_state();
     update_sticky_visual_state();
 });
 
@@ -14,12 +15,14 @@ $(window).resize(function() {
     }
 
     update_page_height();
+    update_top_jump_state();
     update_sticky_visual_state();
 });
 
 $(window).scroll(function() {
     var progress = ($(window).scrollTop() / ($('body').height() - $(window).height())).toFixed(4);
     $('.progress-bar').css('height', 'calc(100vh * ' + progress + ')');
+    update_top_jump_state();
     update_sticky_visual_state();
 });
 
@@ -45,6 +48,10 @@ function update_page_height() {
 
     var totalHeight = mask.offset().top + mask.outerHeight() + 120;
     $('body').css('height', Math.max(totalHeight, $(window).height()) + 'px');
+}
+
+function update_top_jump_state() {
+    $('body').toggleClass('is-scrolled-from-top', $(window).scrollTop() > 24);
 }
 
 function update_sticky_visual_state() {

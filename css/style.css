@@ -86,9 +86,39 @@ table th {
     transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
+.interactive-jump-link {
+    position: fixed;
+    top: max(18px, calc((100% - 450px) / 2 - 92px));
+    right: max(16px, calc((100% - 1000px) / 2));
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 168px;
+    padding: 8px 12px;
+    border: 1px solid rgba(57, 192, 186, 0.42);
+    border-radius: 6px;
+    background: rgba(46, 48, 55, 0.96);
+    color: #39c0ba;
+    font-family: "Roboto Mono", sans-serif;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: center;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.interactive-jump-link:hover {
+    background: #3a3d46;
+    color: white;
+    text-decoration: none;
+}
+
 body.hide-scroll-visual .svg-container,
 body.hide-scroll-visual .fixed-content,
-body.hide-scroll-visual .tooltip {
+body.hide-scroll-visual .tooltip,
+body.is-scrolled-from-top .interactive-jump-link,
+body.hide-scroll-visual .interactive-jump-link {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -519,7 +549,6 @@ body.hide-scroll-visual .tooltip {
 }
 
 .debugger-summary-label {
-    font-family: "Roboto Mono", sans-serif;
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;

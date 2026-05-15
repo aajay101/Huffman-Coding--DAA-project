@@ -1,0 +1,825 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.interactive-page {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #0e1117;
+    color: #e6edf3;
+    font-family: "Inter", "Raleway", sans-serif;
+}
+
+body.interactive-page button,
+body.interactive-page textarea {
+    font: inherit;
+}
+
+.interactive-wrapper {
+    display: grid;
+    grid-template-columns: 400px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+        "ide stage"
+        "nav nav";
+    gap: 14px;
+    width: 100vw;
+    height: 100vh;
+    padding: 14px;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        #0e1117;
+    background-size: 28px 28px;
+    transition: grid-template-columns 0.24s ease;
+}
+
+.interactive-wrapper.is-setup {
+    grid-template-columns: 400px minmax(0, 1fr);
+}
+
+.interactive-wrapper.is-debug {
+    grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.interactive-wrapper.is-expanded {
+    grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.interactive-wrapper.is-debug .interactive-input-shell {
+    display: none;
+}
+
+.interactive-left-panel {
+    grid-area: ide;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: opacity 0.3s ease;
+}
+
+.interactive-wrapper.is-expanded .interactive-left-panel {
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.interactive-visualizer-workspace {
+    grid-area: stage;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 14px;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.interactive-footer-controls {
+    grid-area: nav;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(28, 33, 40, 0.96);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.34);
+}
+
+.interactive-topbar,
+.interactive-input-shell,
+.interactive-output-panel,
+.interactive-card,
+.interactive-stage-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: #1c2128;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22);
+}
+
+.interactive-topbar {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+}
+
+.interactive-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #2b333d;
+    color: #e6edf3;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-family: "JetBrains Mono", "Roboto Mono", monospace;
+    font-size: 12px;
+    line-height: 1;
+    transition: background-color 0.2s ease;
+}
+
+.interactive-nav-link:hover {
+    background: #35404c;
+}
+
+.interactive-back-link {
+    color: #8b949e;
+    text-decoration: none;
+    font-size: 12px;
+    width: fit-content;
+}
+
+.interactive-back-link:hover {
+    color: #e6edf3;
+}
+
+.interactive-title-block {
+    display: grid;
+    gap: 4px;
+}
+
+.interactive-title-block h1 {
+    font-size: 24px;
+    line-height: 1.05;
+    font-weight: 700;
+}
+
+.interactive-kicker,
+.interactive-panel-label,
+.interactive-phase-pill,
+.interactive-status-text,
+.interactive-current-char,
+.interactive-encoded-bits,
+.interactive-step-meta,
+.interactive-code-file,
+.interactive-footer-controls button,
+.interactive-input-shell button,
+.interactive-input-label,
+.interactive-table,
+.interactive-heap,
+.interactive-code-view {
+    font-family: "JetBrains Mono", "Roboto Mono", monospace;
+}
+
+.interactive-kicker,
+.interactive-panel-label {
+    display: inline-block;
+    color: #8b949e;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.interactive-input-shell,
+.interactive-output-panel,
+.interactive-card,
+.interactive-stage-card {
+    padding: 14px;
+}
+
+.interactive-input-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8b949e;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+#interactive-input {
+    width: 100%;
+    height: 92px;
+    resize: none;
+    border: 0;
+    border-radius: 8px;
+    outline: none;
+    background: #151922;
+    color: #e6edf3;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+#interactive-input::placeholder {
+    color: #8b949e;
+}
+
+#interactive-input:focus {
+    box-shadow: inset 0 0 0 1px rgba(80, 190, 170, 0.72);
+}
+
+.interactive-input-actions,
+.interactive-output-header,
+.interactive-card-header,
+.interactive-step-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.interactive-input-actions {
+    margin-top: 10px;
+}
+
+.interactive-input-shell button,
+.interactive-footer-controls button {
+    border: 0;
+    border-radius: 8px;
+    background: #2b333d;
+    color: #e6edf3;
+    padding: 10px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.interactive-footer-controls button[hidden] {
+    display: none;
+}
+
+.interactive-input-shell button:hover:not(:disabled),
+.interactive-footer-controls button:hover:not(:disabled) {
+    background: #35404c;
+}
+
+.interactive-input-shell button:disabled,
+.interactive-footer-controls button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.interactive-status-text,
+#interactive-step-counter-bottom {
+    color: #8b949e;
+    font-size: 12px;
+}
+
+.interactive-error {
+    margin-top: 8px;
+    color: #f5b4b4;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.interactive-output-panel {
+    flex: 0 0 auto;
+    overflow: hidden;
+}
+
+.interactive-wrapper.is-debug .interactive-output-panel {
+    padding: 12px;
+}
+
+.interactive-wrapper.is-debug .interactive-title-block h1 {
+    font-size: 20px;
+}
+
+.interactive-wrapper.is-debug .interactive-output-header,
+.interactive-wrapper.is-debug .interactive-step-meta {
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.interactive-wrapper.is-debug .interactive-encoded-shell {
+    display: none;
+}
+
+.interactive-output-header h2,
+.interactive-stage-title,
+.interactive-subtitle {
+    color: #e6edf3;
+    font-family: "Inter", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.interactive-subtitle {
+    margin-top: 3px;
+    font-size: 15px;
+}
+
+.interactive-step-meta {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    color: #8b949e;
+    font-size: 11px;
+}
+
+.interactive-phase-pill {
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: rgba(80, 190, 170, 0.1);
+    color: #50beaa;
+}
+
+.interactive-step-description {
+    margin-top: 8px;
+    color: #a9b3bd;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.interactive-compact-bits-panel {
+    margin-top: 12px;
+    border-radius: 8px;
+    background: #151922;
+    padding: 10px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.interactive-compact-bits {
+    max-height: 74px;
+    margin-top: 7px;
+    overflow-y: auto;
+    color: #e6edf3;
+    font-family: "JetBrains Mono", "Roboto Mono", monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.interactive-compact-bits.is-empty {
+    color: #8b949e;
+}
+
+.interactive-bit-segment {
+    display: block;
+    margin-bottom: 6px;
+    color: #50beaa;
+}
+
+.interactive-encoded-shell {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.interactive-encoded-source,
+.interactive-encoded-bitstream {
+    min-width: 0;
+    border-radius: 8px;
+    background: #151922;
+    padding: 10px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.interactive-encoded-text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 30px;
+    max-height: 68px;
+    margin-top: 8px;
+    overflow-y: auto;
+}
+
+.interactive-source-char {
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #8b949e;
+    font-size: 12px;
+}
+
+.interactive-source-char.is-active {
+    background: rgba(80, 190, 170, 0.18);
+    color: #e6edf3;
+}
+
+.interactive-source-char.is-complete {
+    color: #d5dde5;
+}
+
+.interactive-current-char {
+    margin-top: 8px;
+    color: #8b949e;
+    font-size: 12px;
+}
+
+.interactive-encoded-bits {
+    max-height: 72px;
+    margin-top: 8px;
+    overflow-y: auto;
+    color: #e6edf3;
+    word-break: break-word;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.interactive-bitstream-pending {
+    color: rgba(139, 148, 158, 0.34);
+}
+
+.interactive-code-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.interactive-code-file {
+    color: #8b949e;
+    font-size: 12px;
+}
+
+.interactive-code-view {
+    min-height: 0;
+    margin-top: 10px;
+    overflow: auto;
+    border-radius: 8px;
+    background: #151922;
+    padding: 10px 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    scrollbar-width: thin;
+    scrollbar-color: #38404a #151922;
+}
+
+.interactive-code-view::-webkit-scrollbar,
+.interactive-table-scroll::-webkit-scrollbar,
+.interactive-heap::-webkit-scrollbar,
+.interactive-encoded-text::-webkit-scrollbar,
+.interactive-encoded-bits::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.interactive-code-view::-webkit-scrollbar-track,
+.interactive-table-scroll::-webkit-scrollbar-track,
+.interactive-heap::-webkit-scrollbar-track,
+.interactive-encoded-text::-webkit-scrollbar-track,
+.interactive-encoded-bits::-webkit-scrollbar-track {
+    background: #151922;
+}
+
+.interactive-code-view::-webkit-scrollbar-thumb,
+.interactive-table-scroll::-webkit-scrollbar-thumb,
+.interactive-heap::-webkit-scrollbar-thumb,
+.interactive-encoded-text::-webkit-scrollbar-thumb,
+.interactive-encoded-bits::-webkit-scrollbar-thumb {
+    background: #38404a;
+    border: 2px solid #151922;
+    border-radius: 999px;
+}
+
+.interactive-code-line {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 12px;
+    padding: 4px 14px;
+    font-size: 12px;
+    line-height: 1.55;
+    transition: background-color 0.22s ease, opacity 0.22s ease;
+}
+
+.interactive-code-line.is-highlighted {
+    background: rgba(80, 190, 170, 0.1);
+    box-shadow: inset 2px 0 0 #50beaa;
+    animation: interactive-code-pulse 1.8s ease-in-out infinite;
+}
+
+.interactive-code-line.is-muted {
+    opacity: 0.28;
+}
+
+@keyframes interactive-code-pulse {
+    0%, 100% {
+        background: rgba(80, 190, 170, 0.08);
+    }
+    50% {
+        background: rgba(80, 190, 170, 0.15);
+    }
+}
+
+.interactive-code-line-number {
+    color: #6e7681;
+    text-align: right;
+    user-select: none;
+}
+
+.interactive-code-line-content {
+    overflow-x: auto;
+    white-space: pre;
+}
+
+.interactive-token-keyword {
+    color: #79c0ff;
+}
+
+.interactive-token-function {
+    color: #d2a8ff;
+}
+
+.interactive-token-string {
+    color: #a5d6ff;
+}
+
+.interactive-token-number {
+    color: #ffa657;
+}
+
+.interactive-stage-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.interactive-tree-viewport {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #11161d;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+#interactive-tree-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.interactive-data-grid {
+    display: grid;
+    grid-template-columns: 280px minmax(220px, 1fr) minmax(220px, 1fr);
+    gap: 14px;
+    min-width: 0;
+    min-height: 0;
+    max-height: 32vh;
+    overflow: hidden;
+}
+
+.interactive-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 18px;
+}
+
+.interactive-scroll-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.interactive-heap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    margin-top: 10px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.interactive-heap-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #151922;
+    color: #e6edf3;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    transition: background-color 0.2s ease;
+}
+
+.interactive-heap-item.is-active {
+    background: rgba(80, 190, 170, 0.14);
+}
+
+.interactive-heap-weight {
+    color: #50beaa;
+}
+
+.interactive-empty-state {
+    color: #8b949e;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.interactive-table-scroll {
+    min-height: 0;
+    margin-top: 10px;
+    overflow-x: auto;
+    overflow-y: auto;
+    border-radius: 8px;
+    background: #151922;
+}
+
+.interactive-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #e6edf3;
+    font-size: 12px;
+}
+
+.interactive-table th,
+.interactive-table td {
+    padding: 9px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.interactive-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #20262f;
+    color: #8b949e;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.interactive-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.interactive-table-row:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.interactive-table-row.is-focus {
+    background: rgba(80, 190, 170, 0.12);
+}
+
+.interactive-table-row.is-consumed {
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.interactive-table-row.is-created {
+    background: rgba(80, 190, 170, 0.08);
+}
+
+.interactive-empty-row {
+    color: #8b949e;
+    padding: 16px 12px;
+}
+
+.interactive-status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #8b949e;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.interactive-status-pill.is-focus,
+.interactive-status-pill.is-created {
+    background: rgba(80, 190, 170, 0.12);
+    color: #50beaa;
+}
+
+.interactive-status-pill.is-active {
+    color: #cdd6df;
+}
+
+.interactive-tree-empty,
+.interactive-tree-edge-label,
+.interactive-tree-node-label,
+.interactive-tree-node-frequency {
+    font-family: "JetBrains Mono", "Roboto Mono", monospace;
+}
+
+.interactive-tree-empty {
+    fill: #8b949e;
+    font-size: 13px;
+}
+
+.interactive-tree-link {
+    fill: none;
+    stroke: rgba(230, 237, 243, 0.18);
+    stroke-width: 1.8px;
+}
+
+.interactive-tree-link.is-focused {
+    stroke: #50beaa;
+    stroke-width: 2.2px;
+}
+
+.interactive-tree-edge-label {
+    fill: #8b949e;
+    font-size: 11px;
+    text-anchor: middle;
+}
+
+.interactive-tree-node circle {
+    fill: #1c2128;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1px;
+}
+
+.interactive-tree-node.is-internal circle {
+    fill: #222933;
+}
+
+.interactive-tree-node.is-focused circle {
+    stroke: #50beaa;
+    stroke-width: 1.5px;
+}
+
+.interactive-tree-node-label {
+    text-anchor: middle;
+    fill: #e6edf3;
+    font-size: 13px;
+}
+
+.interactive-tree-node-frequency {
+    text-anchor: middle;
+    fill: #8b949e;
+    font-size: 11px;
+}
+
+.interactive-visualizer-workspace.is-merge-focus [data-panel="frequency"],
+.interactive-visualizer-workspace.is-merge-focus [data-panel="encoding"] {
+    opacity: 0.28;
+}
+
+.interactive-visualizer-workspace.is-merge-focus [data-panel="heap"],
+.interactive-visualizer-workspace.is-merge-focus [data-panel="tree"] {
+    opacity: 1;
+}
+
+.interactive-panel-card {
+    transition: opacity 0.24s ease;
+}
+
+@media (max-width: 920px) {
+    body.interactive-page {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+    }
+
+    .interactive-wrapper,
+    .interactive-wrapper.is-setup,
+    .interactive-wrapper.is-debug,
+    .interactive-wrapper.is-expanded {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+            "ide"
+            "stage"
+            "nav";
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .interactive-left-panel,
+    .interactive-visualizer-workspace {
+        overflow: visible;
+    }
+
+    .interactive-wrapper.is-expanded .interactive-left-panel {
+        display: none;
+    }
+
+    .interactive-card-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .interactive-tree-viewport {
+        min-height: 380px;
+    }
+
+    .interactive-data-grid {
+        grid-template-columns: 1fr;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .interactive-footer-controls {
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+}
