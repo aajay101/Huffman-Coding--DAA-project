@@ -3,15 +3,10 @@ from __future__ import annotations
 import base64
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, render_template, request
 
-try:
-    from .huffman_engine import compress_and_pack, encode_with_trace, verify_decompression
-except ImportError:
-    from huffman_engine import compress_and_pack, encode_with_trace, verify_decompression
+from huffman_engine import compress_and_pack, encode_with_trace, verify_decompression
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = Flask(__name__)
 
@@ -19,34 +14,19 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/index.html")
 def index():
-    return send_from_directory(BASE_DIR, "index.html")
+    return render_template("index.html")
 
 
 @app.route("/interactive")
 @app.route("/interactive.html")
 def interactive():
-    return send_from_directory(BASE_DIR, "interactive.html")
+    return render_template("interactive.html")
 
 
 @app.route("/text_compressor")
 @app.route("/text_compressor.html")
 def text_compressor():
-    return send_from_directory(BASE_DIR, "text_compressor.html")
-
-
-@app.route("/css/<path:filename>")
-def css(filename):
-    return send_from_directory(BASE_DIR / "css", filename)
-
-
-@app.route("/js/<path:filename>")
-def js(filename):
-    return send_from_directory(BASE_DIR / "js", filename)
-
-
-@app.route("/img/<path:filename>")
-def img(filename):
-    return send_from_directory(BASE_DIR / "img", filename)
+    return render_template("text_compressor.html")
 
 
 @app.route("/encode", methods=["POST"])

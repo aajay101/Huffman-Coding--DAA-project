@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interactive Huffman Algorithm Debugger</title>
-    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/icon.png') }}" />
 
-    <script src="js/lib/d3.v4.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/d3.v4.min.js') }}"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500|Inter:400,500,600,700|JetBrains+Mono:400,500,600|Roboto+Mono:400,500">
-    <link rel="stylesheet" href="css/interactive.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive.css') }}">
 </head>
 <body class="interactive-page">
     <main id="interactive-huffman-app" class="interactive-wrapper is-setup">
@@ -75,7 +75,7 @@
                         <span class="interactive-panel-label">Visualization Stage</span>
                         <h3 class="interactive-stage-title">Huffman Tree</h3>
                     </div>
-                    <a href="index.html" class="interactive-nav-link">Back to Scrollytelling</a>
+                    <a href="{{ url_for('index') }}" class="interactive-nav-link">Back to Scrollytelling</a>
                 </div>
                 <div id="tree-viz" class="interactive-tree-viewport">
                     <svg id="interactive-tree-svg"></svg>
@@ -144,10 +144,10 @@
         </footer>
     </main>
 
-    <script type="text/javascript" src="js/interactive-state.js"></script>
-    <script type="text/javascript" src="js/interactive-ui.js"></script>
-    <script type="text/javascript" src="js/interactive-tree.js"></script>
-    <script type="text/javascript" src="js/interactive-controls.js"></script>
-    <script type="text/javascript" src="js/interactive-huffman.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/interactive-state.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/interactive-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/interactive-tree.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/interactive-controls.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/interactive-huffman.js') }}"></script>
 </body>
 </html>

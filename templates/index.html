@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visualizing Huffman Coding</title>
-    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/icon.png') }}" />
 
     <!-- importing jQuery, d3 v4, MathJax -->
-    <script src="js/lib/jquery.min.js"></script>
-    <script src="js/lib/d3.v4.min.js"></script>
-    <script src="js/lib/graph-scroll.js"></script>
-    <script src="js/lib/jBox.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/d3.v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/graph-scroll.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/jBox.min.js') }}"></script>
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         CommonHTML: {
@@ -25,21 +25,21 @@
     });
     </script>
     <script type="text/javascript" async
-      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
+      src="{{ url_for('static', filename='lib/mathjax.js') }}">
     </script>
     
     <!-- styling -->
-    <link rel="stylesheet" href="css/jBox.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jBox.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500|Roboto+Mono:400,500">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="progress-bar">
     </div>
 
     <div class="interactive-nav-buttons">
-        <a href="interactive.html" class="interactive-jump-link">Open Interactive Workstation</a>
-        <a href="text_compressor.html" class="interactive-jump-link">Open Huffman File Compressor</a>
+        <a href="{{ url_for('interactive') }}" class="interactive-jump-link">Open Interactive Workstation</a>
+        <a href="{{ url_for('text_compressor') }}" class="interactive-jump-link">Open Huffman File Compressor</a>
     </div>
 
     <div class="svg-container">
@@ -341,11 +341,11 @@
     </div>
 
     <!-- javascript -->
-    <script type="text/javascript" src="js/huffman.js"></script>
-    <script type="text/javascript" src="js/poly.js"></script>
-    <script type="text/javascript" src="js/queue.js"></script>
-    <script type="text/javascript" src="js/scroll.js"></script>
-    <script type="text/javascript" src="js/debugger.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/huffman.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/poly.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/queue.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/scroll.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/debugger.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

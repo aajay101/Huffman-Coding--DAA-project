@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Huffman Compression Workstation</title>
-    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
-    <script src="js/lib/d3.v4.min.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/icon.png') }}" />
+    <script src="{{ url_for('static', filename='lib/d3.v4.min.js') }}"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700|JetBrains+Mono:400,500,600">
-    <link rel="stylesheet" href="css/interactive.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive.css') }}">
 </head>
 <body class="tc-page">
     <main id="interactive-huffman-app" class="interactive-wrapper tc-workstation" aria-label="Huffman compression workstation">
-        <aside class="tc-sidebar">
+        <aside class="tc-sidebar tc-left-panel">
             <header class="tc-panel tc-brand-panel">
                 <span class="tc-kicker">File Utility</span>
                 <h1>Huffman Compression Workstation</h1>
@@ -28,7 +28,7 @@
                 <p id="tc-error" class="tc-error" hidden></p>
             </form>
 
-            <section class="tc-dashboard-grid tc-sidebar-metrics" aria-label="Compression metrics">
+            <section id="tc-stats-container" class="tc-dashboard-grid tc-sidebar-metrics" aria-label="Compression metrics">
                 <article class="tc-metric-card">
                     <span class="tc-kicker">Original Size</span>
                     <strong id="tc-original-size">--</strong>
@@ -107,7 +107,7 @@
                         <span class="tc-kicker">Workspace</span>
                         <h2>Compression Analysis</h2>
                     </div>
-                    <a class="tc-link-button" href="index.html">Back to Huffman Visualization</a>
+                    <a class="tc-link-button" href="{{ url_for('index') }}">Back to Huffman Visualization</a>
                 </div>
 
                 <div class="tc-tabs" role="tablist" aria-label="Analysis views">
@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="tc-tab-panel is-active" data-tc-panel="tree">
-                    <div id="tc-tree-host" class="tc-tree-host">
+                    <div id="tc-tree-viz" class="tc-tree-host">
                         <svg id="tc-tree-svg" class="tc-tree-svg" aria-label="Huffman tree"></svg>
                     </div>
                 </div>
@@ -199,6 +199,6 @@
         </section>
     </main>
 
-    <script type="text/javascript" src="js/text-compressor.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/text-compressor.js') }}"></script>
 </body>
 </html>

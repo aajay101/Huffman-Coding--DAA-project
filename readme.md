@@ -1,6 +1,36 @@
 
-This is a scroll-based walkthrough exploring and comparing [traditional Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding) to [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding). It serves as a tool to learn how the two algorithms work and is intended for anyone to view (not just CS majors).
+# Huffman Coding Workstation
 
-This was done as a  project for Design Analysis and Algorithm (DAA) in the Sem-04 
+Flask application for visualizing Huffman coding, stepping through the algorithm, and compressing text files with diagnostic metrics.
 
-More Work is Left out 
+## Routes
+
+- `/` - scrollytelling Huffman visualization
+- `/interactive` - interactive Huffman algorithm debugger
+- `/text_compressor` - file compression workstation
+
+## Local Development
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
+```
+
+Open `http://127.0.0.1:5000/`.
+
+## Production
+
+The app is structured for:
+
+```bash
+gunicorn app:app
+```
+
+## Docker
+
+```bash
+docker build -t huffman-workstation .
+docker run -p 8000:8000 huffman-workstation
+```
