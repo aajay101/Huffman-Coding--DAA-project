@@ -785,7 +785,7 @@ class HuffmanProcessor:
         bit_string = "".join(codes[byte_value] for byte_value in data)
         payload_bytes, padding_bits = self.pack_to_binary(bit_string)
         original_hash = hashlib.sha256(data).hexdigest()
-        header, metadata = self.generate_header(freq_table, padding_bits, len(data), original_hash)
+        header, metadata = self.generate_header(freq_table, padding_bits, len(data), original_hash, filename)
         metadata_bytes = header[4:]
         packed_file = header + payload_bytes
         bitstream_diagnostics = self._build_bitstream_diagnostics(
@@ -817,6 +817,7 @@ class HuffmanProcessor:
         metrics["filename"] = filename
         metrics["verified"] = verified
         metrics["status"] = verification["status"]
+        metrics["sha256"] = original_hash
         metadata_breakdown = self.get_metadata(metrics)
         comparison = {
             "fixed_ascii_bits": self.calculate_theoretical_limit(original_size),
@@ -851,6 +852,12 @@ class HuffmanProcessor:
             "packed_file": packed_file,
             "encoded_payload": payload_bytes,
             "metadata": metadata,
+            "json_metadata_header": {
+                **metadata,
+                "final_tree": self._serialize_tree(root),
+                "metrics": metrics,
+                "compression_insights": dynamic_insights,
+            },
             "metrics": metrics,
             "stats": metrics,
             "metadata_breakdown": metadata_breakdown,
@@ -923,9 +930,9 @@ class HuffmanProcessor:
                 "label": self._display_byte(byte_value),
                 "frequency": frequency,
                 "type": "leaf",
-                "min_character": f"{byte_value:03d}",
+                "character": byte_value,
             }
-            heapq.heappush(heap, (frequency, node["min_character"], node["id"], node))
+            heapq.heappush(heap, (frequency, node["character"], node["id"], node))
 
         if len(heap) == 1:
             return heap[0][3]
@@ -941,7 +948,7 @@ class HuffmanProcessor:
                 "label": str(left_frequency + right_frequency),
                 "frequency": left_frequency + right_frequency,
                 "type": "internal",
-                "min_character": parent_character,
+                "character": parent_character,
                 "children": [left, right],
             }
             heapq.heappush(heap, (parent["frequency"], parent_character, parent["id"], parent))
@@ -968,12 +975,16 @@ class HuffmanProcessor:
     def pack_bytes(self, bit_string):
         return self.pack_to_binary(bit_string)
 
-    def generate_header(self, freq_table, padding_count, original_size, original_hash=None):
+    def generate_header(self, freq_table, padding_count, original_size, original_hash=None, filename="input.txt"):
         metadata = {
+            "format": "adaptive-huffman-demo",
+            "version": 2,
+            "filename": filename,
             "freq_table": {str(byte_value): count for byte_value, count in sorted(freq_table.items())},
             "padding_bits": padding_count,
             "original_size": original_size,
             "original_hash": original_hash or "",
+            "original_sha256": original_hash or "",
         }
         metadata_bytes = json.dumps(metadata, separators=(",", ":"), sort_keys=True).encode("utf-8")
         return len(metadata_bytes).to_bytes(4, "big", signed=False) + metadata_bytes, metadata
@@ -997,12 +1008,13 @@ class HuffmanProcessor:
 
         metadata = json.loads(file_bytes[metadata_start:metadata_end].decode("utf-8"))
         freq_table = {int(byte_value): count for byte_value, count in metadata["freq_table"].items()}
+        self._node_id = 0
         root = self.build_huffman_tree(freq_table)
         payload = file_bytes[metadata_end:]
         bit_string = self._unpack_bytes(payload, int(metadata["padding_bits"]))
         decoded = self._decode_bits(bit_string, root)
         decoded_hash = hashlib.sha256(decoded).hexdigest()
-        original_hash = metadata.get("original_hash", "")
+        original_hash = metadata.get("original_sha256") or metadata.get("original_hash", "")
         size_ok = len(decoded) == int(metadata.get("original_size", len(decoded)))
         hash_ok = decoded_hash == original_hash if original_hash else True
 
