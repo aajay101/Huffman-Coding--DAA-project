@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Huffman Compression Workstation</title>
+    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
+    <script src="js/lib/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700|JetBrains+Mono:400,500,600">
+    <link rel="stylesheet" href="css/interactive.css">
+</head>
+<body class="tc-page">
+    <main id="interactive-huffman-app" class="interactive-wrapper tc-workstation" aria-label="Huffman compression workstation">
+        <aside class="tc-sidebar">
+            <header class="tc-panel tc-brand-panel">
+                <span class="tc-kicker">File Utility</span>
+                <h1>Huffman Compression Workstation</h1>
+            </header>
+
+            <form id="tc-upload-form" class="tc-panel tc-upload-panel">
+                <label class="tc-label" for="tc-file-input">Text File</label>
+                <input id="tc-file-input" class="tc-file-input" type="file" name="file" accept=".txt,text/plain">
+                <div class="tc-action-row">
+                    <button id="tc-compress-button" class="tc-button tc-primary" type="submit">Compress</button>
+                    <a id="tc-download" class="tc-button tc-download is-disabled" href="#" aria-disabled="true">Download .huff</a>
+                </div>
+                <p id="tc-status" class="tc-status">Waiting for input.</p>
+                <p id="tc-error" class="tc-error" hidden></p>
+            </form>
+
+            <section class="tc-dashboard-grid tc-sidebar-metrics" aria-label="Compression metrics">
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Original Size</span>
+                    <strong id="tc-original-size">--</strong>
+                    <small>Input bytes</small>
+                </article>
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Compressed Size</span>
+                    <strong id="tc-compressed-size">--</strong>
+                    <small>Header + payload</small>
+                </article>
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Compression Ratio</span>
+                    <strong id="tc-ratio-value">--</strong>
+                    <small>Compressed / original</small>
+                </article>
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Entropy</span>
+                    <strong id="tc-entropy">--</strong>
+                    <small>Shannon H</small>
+                </article>
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Efficiency</span>
+                    <strong id="tc-efficiency">--</strong>
+                    <small>H / avg code length</small>
+                </article>
+                <article class="tc-metric-card">
+                    <span class="tc-kicker">Redundancy</span>
+                    <strong id="tc-redundancy">--</strong>
+                    <small>Lavg - entropy</small>
+                </article>
+            </section>
+
+            <section class="tc-panel tc-ratio-panel">
+                <span class="tc-kicker">Payload Ratio</span>
+                <div class="tc-ratio-track" aria-hidden="true">
+                    <span id="tc-ratio-fill" class="tc-ratio-fill"></span>
+                </div>
+                <span id="tc-integrity" class="tc-integrity">Integrity: pending</span>
+            </section>
+
+            <section class="tc-panel">
+                <div class="tc-section-heading">
+                    <span class="tc-kicker">Insights</span>
+                    <h2>Compression Readout</h2>
+                </div>
+                <ul id="tc-insights" class="tc-insights">
+                    <li>No analysis yet.</li>
+                </ul>
+            </section>
+
+            <section class="tc-panel">
+                <div class="tc-section-heading">
+                    <span class="tc-kicker">.huff Structure</span>
+                    <h2>Metadata Breakdown</h2>
+                </div>
+                <div class="tc-breakdown-grid">
+                    <div><strong id="tc-payload-size">--</strong><span>Payload Size</span></div>
+                    <div><strong id="tc-header-size">--</strong><span>Header Size</span></div>
+                    <div><strong id="tc-padding-size">--</strong><span>Padding Bits</span></div>
+                </div>
+            </section>
+        </aside>
+
+        <section class="tc-main-stage">
+            <section class="tc-panel tc-comparison-panel">
+                <div class="tc-section-heading">
+                    <span class="tc-kicker">Efficiency Comparison</span>
+                    <h2>Fixed 8-bit ASCII vs Huffman</h2>
+                </div>
+                <div id="tc-comparison-chart" class="tc-comparison-chart"></div>
+            </section>
+
+            <section class="tc-panel tc-stage-panel">
+                <div class="tc-stage-header">
+                    <div>
+                        <span class="tc-kicker">Workspace</span>
+                        <h2>Compression Analysis</h2>
+                    </div>
+                    <a class="tc-link-button" href="index.html">Back to Huffman Visualization</a>
+                </div>
+
+                <div class="tc-tabs" role="tablist" aria-label="Analysis views">
+                    <button class="tc-tab is-active" type="button" data-tc-tab="tree">Tree Visualizer</button>
+                    <button class="tc-tab" type="button" data-tc-tab="chart">Frequency Chart</button>
+                    <button class="tc-tab" type="button" data-tc-tab="bitstream">Bitstream Peek</button>
+                </div>
+
+                <div class="tc-tab-panel is-active" data-tc-panel="tree">
+                    <div id="tc-tree-host" class="tc-tree-host">
+                        <svg id="tc-tree-svg" class="tc-tree-svg" aria-label="Huffman tree"></svg>
+                    </div>
+                </div>
+
+                <div class="tc-tab-panel" data-tc-panel="chart">
+                    <canvas id="tc-frequency-chart" class="tc-chart-canvas" aria-label="Frequency chart"></canvas>
+                    <div id="tc-frequency-bars" class="tc-frequency-bars"></div>
+                </div>
+
+                <div class="tc-tab-panel" data-tc-panel="bitstream">
+                    <section class="tc-bitstream-suite" aria-label="Bit-level diagnostics">
+                        <div class="tc-bitstream-meta">
+                            <span>Payload: <strong id="tc-bit-payload-count">--</strong></span>
+                            <span>Padding: <strong id="tc-bit-padding-count">--</strong></span>
+                            <span>Total: <strong id="tc-bit-total-bytes">--</strong></span>
+                        </div>
+                        <table class="tc-before-after-table">
+                            <thead>
+                                <tr>
+                                    <th>Before: Fixed ASCII</th>
+                                    <th>After: Huffman Packed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="tc-ascii-preview">No ASCII preview.</td>
+                                    <td id="tc-huffman-preview">No Huffman preview.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="tc-bitstream-peek" class="tc-bitstream-peek">No bitstream generated.</div>
+                        <button id="tc-bitstream-more" class="tc-button tc-bitstream-more" type="button" hidden>Show more</button>
+                    </section>
+                </div>
+            </section>
+
+            <section class="tc-table-grid">
+                <section class="tc-panel">
+                    <div class="tc-section-heading">
+                        <span class="tc-kicker">Frequency Table</span>
+                        <h2>Top Symbols</h2>
+                    </div>
+                    <div class="tc-table-container">
+                        <table class="tc-table">
+                            <thead>
+                                <tr>
+                                    <th>Character</th>
+                                    <th>Frequency</th>
+                                    <th>Share</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tc-frequency-body">
+                                <tr><td colspan="3">No frequency data.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="tc-panel">
+                    <div class="tc-section-heading">
+                        <span class="tc-kicker">Code Alphabet</span>
+                        <h2>Assigned Codes</h2>
+                    </div>
+                    <div class="tc-table-container">
+                        <table class="tc-table">
+                            <thead>
+                                <tr>
+                                    <th>Character</th>
+                                    <th>Code</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tc-code-body">
+                                <tr><td colspan="2">No codes generated.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <script type="text/javascript" src="js/text-compressor.js"></script>
+</body>
+</html>

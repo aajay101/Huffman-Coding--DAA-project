@@ -89,7 +89,6 @@ table th {
 .interactive-jump-link {
     position: fixed;
     top: max(18px, calc((100% - 450px) / 2 - 92px));
-    right: max(16px, calc((100% - 1000px) / 2));
     z-index: 30;
     display: inline-flex;
     align-items: center;
@@ -108,6 +107,19 @@ table th {
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
+.interactive-nav-buttons {
+    position: fixed;
+    top: max(18px, calc((100% - 450px) / 2 - 92px));
+    right: max(16px, calc((100% - 1000px) / 2));
+    z-index: 30;
+    display: flex;
+    gap: 12px;
+}
+
+.interactive-nav-buttons .interactive-jump-link {
+    position: static;
+}
+
 .interactive-jump-link:hover {
     background: #3a3d46;
     color: white;
@@ -117,6 +129,8 @@ table th {
 body.hide-scroll-visual .svg-container,
 body.hide-scroll-visual .fixed-content,
 body.hide-scroll-visual .tooltip,
+body.is-scrolled-from-top .interactive-nav-buttons,
+body.hide-scroll-visual .interactive-nav-buttons,
 body.is-scrolled-from-top .interactive-jump-link,
 body.hide-scroll-visual .interactive-jump-link {
     opacity: 0;

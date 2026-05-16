@@ -7,7 +7,8 @@
         empty: null,
         zoom: null,
         resizeObserver: null,
-        positions: {}
+        positions: {},
+        staticStep: null
     };
 
     function ensureStage() {
@@ -134,7 +135,7 @@
         return { x: node.x, y: node.y };
     }
 
-    function renderForest(step) {
+    function renderForest(step, instant) {
         var currentStage = ensureStage();
         var host = document.getElementById("tree-viz") || document.getElementById("interactive-tree-svg");
         if (!host) return;
@@ -167,7 +168,7 @@
             nextPositions[node.id] = { x: node.x, y: node.y };
         });
 
-        var transition = d3.transition().duration(DURATION).ease(EASE);
+        var transition = d3.transition().duration(instant ? 0 : DURATION).ease(EASE);
 
         var links = currentStage.layer.selectAll(".interactive-tree-link")
             .data(layout.links, function(d) { return d.id; });
@@ -294,10 +295,32 @@
             stage.resizeObserver.observe(host);
         },
         render: function(step) {
+            stage.staticStep = null;
             renderForest(step);
         },
+        renderStatic: function(treeData) {
+            if (!treeData) {
+                this.rerender();
+                return;
+            }
+
+            stage.positions = {};
+            stage.staticStep = {
+                tree: {
+                    id: "final-forest",
+                    label: "forest",
+                    frequency: treeData.frequency || 0,
+                    virtual: true,
+                    children: [treeData]
+                },
+                focus_nodes: []
+            };
+            renderForest(stage.staticStep, true);
+        },
         rerender: function() {
-            if (window.InteractiveHuffmanState && window.InteractiveHuffmanState.hasData()) {
+            if (stage.staticStep) {
+                renderForest(stage.staticStep, true);
+            } else if (window.InteractiveHuffmanState && window.InteractiveHuffmanState.hasData()) {
                 window.InteractiveHuffmanState.rerender();
             } else {
                 var host = document.getElementById("tree-viz") || document.getElementById("interactive-tree-svg");
